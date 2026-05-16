@@ -554,23 +554,40 @@ async function saveImg(){
       backgroundColor:cardBg,logging:false,imageTimeout:0,
       ignoreElements:el=>el.classList&&el.classList.contains('toolbar'),
       onclone:(doc)=>{
+        /* ensure CSS vars are set on cloned root */
+        doc.documentElement.style.setProperty('--c1',c1);
+        doc.documentElement.style.setProperty('--c2',c2);
+        doc.documentElement.style.setProperty('--card',cardBg);
+        /* kill the card's drop-shadow that creates the dark square frame around capture */
+        const ccap=doc.getElementById('capture');
+        if(ccap)ccap.style.setProperty('box-shadow','none','important');
         doc.querySelectorAll('img').forEach(im=>{if(!im.getAttribute('src')||im.getAttribute('src')==='')im.remove();});
         const strip=doc.querySelector('.card-strip');
-        if(strip){const mid=blend(c1,c2);strip.style.background='linear-gradient(90deg,'+c1+','+mid+','+c2+')';}
+        if(strip){const mid=blend(c1,c2);strip.style.cssText='height:4px;background:linear-gradient(90deg,'+c1+','+mid+','+c2+')';}
         doc.querySelectorAll('.cat-line').forEach(el=>{el.style.background='#3A2A50'});
         doc.querySelectorAll('.color-row,.legend,.avatar-btn').forEach(el=>{el.style.display='none';});
-        doc.querySelectorAll('.dot.d1').forEach(d=>{d.style.borderColor=c1;if(d.classList.contains('on'))d.style.background=c1;});
-        doc.querySelectorAll('.dot.d2').forEach(d=>{d.style.borderColor=c2;if(d.classList.contains('on'))d.style.background=c2;});
+        /* dots: use full border shorthand with !important to defeat any CSS var fallback */
+        doc.querySelectorAll('.dot.d1').forEach(d=>{
+          d.style.setProperty('border','1.5px solid '+c1,'important');
+          if(d.classList.contains('on'))d.style.setProperty('background-color',c1,'important');
+        });
+        doc.querySelectorAll('.dot.d2').forEach(d=>{
+          d.style.setProperty('border','1.5px solid '+c2,'important');
+          if(d.classList.contains('on'))d.style.setProperty('background-color',c2,'important');
+        });
         [1,2].forEach((n,i)=>{
           const ringColor=i===0?c1:c2;
+          const url=[av1url,av2url][i];
           const cAv=doc.getElementById('av'+n);if(!cAv)return;
+          cAv.style.setProperty('box-shadow','none','important');
+          /* always wrap with ring + gap so the avatar always has a colored ring */
           const ring=doc.createElement('div');
-          ring.style.cssText='width:108px;height:108px;border-radius:50%;background:'+ringColor+';display:flex;align-items:center;justify-content:center;flex-shrink:0';
+          ring.style.cssText='width:108px;height:108px;border-radius:50%;background:'+ringColor+';display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:none;padding:0;margin:0';
           const gap=doc.createElement('div');
-          gap.style.cssText='width:100px;height:100px;border-radius:50%;background:'+cardBg+';display:flex;align-items:center;justify-content:center';
-          cAv.style.boxShadow='none';
+          gap.style.cssText='width:100px;height:100px;border-radius:50%;background:'+cardBg+';display:flex;align-items:center;justify-content:center;box-shadow:none;padding:0;margin:0';
           const parent=cAv.parentNode;const next=cAv.nextSibling;
-          parent.insertBefore(ring,next);ring.appendChild(gap);gap.appendChild(cAv);
+          parent.insertBefore(ring,next);
+          ring.appendChild(gap);gap.appendChild(cAv);
         });
         [1,2].forEach(n=>{
           const inp=doc.getElementById('n'+n);if(!inp)return;
