@@ -123,10 +123,10 @@ body.no-pattern::before{display:none}
 .avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
 .avatar-init{
   position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-  font-size:30px;font-weight:500;color:#fff;z-index:2;
+  font-size:30px;font-weight:500;color:#fff;z-index:1;
 }
 .avatar-img-wrap{
-  position:absolute;inset:0;overflow:hidden;border-radius:50%;display:none;
+  position:absolute;inset:0;overflow:hidden;border-radius:50%;display:none;z-index:2;
 }
 .avatar-img-wrap img{
   position:absolute;transform-origin:center center;cursor:grab;
@@ -478,7 +478,7 @@ function loadPhoto(n){
     const init=document.getElementById('init'+n);const ab=document.getElementById('ab'+n);
     imgState[n]={scale:1,tx:0,ty:0,dragging:false,lx:0,ly:0,pinching:false,pd:0};
     img.style.transform='';img.src=e.target.result;
-    iw.style.display='block';init.style.visibility='hidden';ab.style.display='flex';
+    iw.style.display='block';init.style.display='none';ab.style.display='flex';
     setupImgInteraction(n);
   };
   r.readAsDataURL(f);
