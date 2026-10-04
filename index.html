@@ -179,6 +179,13 @@ input{font:inherit;color:inherit}
 .gci{border-color:#5E5B59}
 .gcustom{border-left-color:#2E2E31}
 
+
+/* ---------- trait row fixes: room for 100%, one fill color ---------- */
+.traits{max-width:244px}
+.tr-v{width:34px;white-space:nowrap;font-variant-numeric:normal;letter-spacing:0}
+.ax .tr{gap:7px}
+.ax .tr:not(.best) .tr-fill,.tr.one .tr-fill{opacity:1}
+
 /* ---------- mobile ---------- */
 @media (max-width:600px){
   body{padding:12px 8px 90px}
